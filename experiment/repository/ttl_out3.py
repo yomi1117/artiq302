@@ -1,0 +1,147 @@
+from artiq.experiment import *
+#sends simple pulses out of the TTL ports; this is done sequentially
+#minimum pulse width = 5ns
+class TTL_Output(EnvExperiment):
+    def build(self):
+        self.setattr_device("core")
+        for i in range(4, 16):
+            self.setattr_device(f"ttl{i}")
+
+    @kernel
+    def run(self):
+        self.core.reset()
+        # 依次设置 ttl4 到 ttl15 为输出模式
+        self.ttl4.output()
+        self.ttl5.output()
+        self.ttl6.output()
+        self.ttl7.output()
+        self.ttl8.output()
+        self.ttl9.output()
+        self.ttl10.output()
+        self.ttl11.output()
+        self.ttl12.output()
+        self.ttl13.output()
+        self.ttl14.output()
+        self.ttl15.output()
+
+        for i in range(40000):
+            # 0
+            with parallel:
+                self.ttl4.off()
+                self.ttl5.off()
+                self.ttl6.off()
+                self.ttl7.off()
+                self.ttl8.off()
+                self.ttl9.off()
+                self.ttl10.off()
+                self.ttl11.off()
+                self.ttl12.off()
+                self.ttl13.off()
+                self.ttl14.off()
+                self.ttl15.off()
+                delay(50*us)
+            # 7
+            with parallel:
+                self.ttl4.on()
+                self.ttl5.on()
+                self.ttl6.on()
+                self.ttl7.on()
+                self.ttl8.on()
+                self.ttl9.on()
+                self.ttl10.on()
+                self.ttl11.on()
+                self.ttl12.on()
+                self.ttl13.on()
+                self.ttl14.on()
+                self.ttl15.on()
+                delay(50*us)
+            # 1
+            with parallel:
+                self.ttl4.off()
+                self.ttl5.off()
+                self.ttl6.off()
+                self.ttl7.off()
+                self.ttl8.off()
+                self.ttl9.off()
+                self.ttl10.off()
+                self.ttl11.off()
+                self.ttl12.off()
+                self.ttl13.off()
+                self.ttl14.off()
+                self.ttl15.off()
+                delay(50*us)
+            # 6
+            with parallel:
+                self.ttl4.off()
+                self.ttl5.off()
+                self.ttl6.off()
+                self.ttl7.off()
+                self.ttl8.off()
+                self.ttl9.off()
+                self.ttl10.off()
+                self.ttl11.off()
+                self.ttl12.off()
+                self.ttl13.off()
+                self.ttl14.off()
+                self.ttl15.on()
+                delay(50*us)
+            # 2
+            with parallel:
+                self.ttl4.on()
+                self.ttl5.off()
+                self.ttl6.off()
+                self.ttl7.off()
+                self.ttl8.off()
+                self.ttl9.off()
+                self.ttl10.off()
+                self.ttl11.off()
+                self.ttl12.off()
+                self.ttl13.off()
+                self.ttl14.off()
+                self.ttl15.off()
+                delay(50*us)
+            # 5
+            with parallel:
+                self.ttl4.on()
+                self.ttl5.on()
+                self.ttl6.on()
+                self.ttl7.on()
+                self.ttl8.on()
+                self.ttl9.on()
+                self.ttl10.on()
+                self.ttl11.on()
+                self.ttl12.on()
+                self.ttl13.on()
+                self.ttl14.on()
+                self.ttl15.on()
+                delay(50*us)
+            # 3
+            with parallel:
+                self.ttl4.off()
+                self.ttl5.on()
+                self.ttl6.off()
+                self.ttl7.off()
+                self.ttl8.off()
+                self.ttl9.off()
+                self.ttl10.off()
+                self.ttl11.off()
+                self.ttl12.off()
+                self.ttl13.off()
+                self.ttl14.off()
+                self.ttl15.off()
+                delay(50*us)
+            # 4
+            with parallel:
+                self.ttl4.on()
+                self.ttl5.off()
+                self.ttl6.off()
+                self.ttl7.off()
+                self.ttl8.off()
+                self.ttl9.off()
+                self.ttl10.off()
+                self.ttl11.off()
+                self.ttl12.off()
+                self.ttl13.off()
+                self.ttl14.off()
+                self.ttl15.on()
+                delay(50*us)
