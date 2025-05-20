@@ -94,6 +94,8 @@ class DDSScan(ExpFragment):
                 dds = self.urukul1_ch3
         
         # Initialize the device
+        self.core.break_realtime()
+        
         dds.cpld.init()
         dds.init()
         delay(100*ms)

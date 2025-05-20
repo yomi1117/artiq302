@@ -9,7 +9,7 @@ class TTL_input(EnvExperiment):
         
         # Add parameter for TTL channel selection
         self.setattr_argument("ttl_channel", NumberValue(0, min=0, max=3, step=1, precision=0))
-    
+        self.setattr_argument("duration", NumberValue(100, min=0, max=1000000, step=0.1, precision=0))
         # 设置所有的设备
         self.setattr_device("ttl0")
         self.setattr_device("ttl1")
@@ -22,6 +22,7 @@ class TTL_input(EnvExperiment):
     @kernel
     def run(self):
         self.core.reset()
+        duration = self.duration
         # 使用if-else选择TTL设备
         if self.ttl_channel == 0:
             ttl = self.ttl0
@@ -37,9 +38,9 @@ class TTL_input(EnvExperiment):
         pmt_temp[1] = 500
         self.set_dataset("pmt_readlist", pmt_temp, broadcast=True)
         while True:
-            delay(10*ms)
+            delay(200*ms)
             with parallel:
-                cnt = ttl.gate_rising(100*ms)
+                cnt = ttl.gate_rising(duration*us)
                 num = ttl.count(cnt)
             
             pmt_temp[2:-1] = pmt_temp[3:]

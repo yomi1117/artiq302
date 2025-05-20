@@ -51,7 +51,11 @@ class RabiFlopDDS(ExpFragment):
         self.setattr_device("core")
         self.setattr_device("urukul0_ch0")
         self.setattr_fragment("readout", Readout)
-
+        self.setattr_param("amplitude",
+                           FloatParam,
+                           "Amplitude",
+                           0.5,
+                           min=0.0)
         self.setattr_param("rabi_freq",
                            FloatParam,
                            "Rabi frequency",
@@ -61,29 +65,37 @@ class RabiFlopDDS(ExpFragment):
         self.setattr_param("duration",
                            FloatParam,
                            "Pulse duration",
-                           5.0 ,
+                           500.0 ,
                            min=0.0)
         self.setattr_param("detuning", FloatParam, "Detuning", 0.0 * MHz, unit="MHz")
         self.setattr_param("initial_state", IntParam, "Initial state (0: dark, 1: bright)", 1, min=0, max=1)
 
     @kernel
-    def run_once(self):
-        # Initialize DDS
-        self.core.reset()
+    def device_setup(self):
+
+        self.core.break_realtime()
         self.urukul0_ch0.cpld.init()
         self.urukul0_ch0.init()
-        duration = self.duration.get()
-        delay(100*ms)
+        self.urukul0_ch0.set_att(0*dB)
         
-        # Set DDS parameters
+    @kernel
+    def dds_hold(self):
+        self.core.break_realtime()
         self.urukul0_ch0.set(frequency=self.rabi_freq.get(),
                             phase=0.0,
-                            amplitude=1.0)
-        
-        # Turn on output
+                            amplitude=self.amplitude.get())
         self.urukul0_ch0.sw.on()
-        delay(duration)
+        delay(self.duration.get()*ms)
         self.urukul0_ch0.sw.off()
+        delay(100*ms)
+
+
+    def run_once(self):
+        # Initialize DDS
+        print("begins", self.rabi_freq.get(), self.duration.get())
+        # self.device_setup()
+        # self.prepare()
+        self.dds_hold()
         
         # Calculate probability
         omega0 = 2 * np.pi * self.rabi_freq.get()
@@ -96,7 +108,6 @@ class RabiFlopDDS(ExpFragment):
             p = 1 - p
             
         self.readout.simulate_shots(p)
-        delay(100*ms)
 
     def get_default_analyses(self):
         return [

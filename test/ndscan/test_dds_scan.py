@@ -65,14 +65,15 @@ class DDSScan(ExpFragment):
         amp = self.amplitude.get()
         
         # Set DDS parameters
-        self.urukul0_ch0.set(frequency=freq,
-                            phase=self.phase.get(),
+        self.urukul0_ch0.set(frequency=freq*Hz,
+                            phase=0.0,
                             amplitude=amp)
         
         # Turn on output
         self.urukul0_ch0.sw.on()
-        delay(self.duration.get() * ms)
-        
+        print(self.duration.get(), freq, amp)
+        # delay(self.duration.get() * ms)
+        delay(2000*ms)
         # Turn off output
         self.urukul0_ch0.sw.off()
         delay(100*ms)
